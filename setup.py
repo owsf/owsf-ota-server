@@ -18,6 +18,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=["flask", "flask_api", "packaging", "nacl", "json"],
+    install_requires=["flask", "flask_api", "packaging", "PyNaCl"],
     extras_require={"test": ["pytest", "coverage"]},
 )
