@@ -38,11 +38,11 @@ def create_app(test_config=None):
 
     @app.route('/api/v1/global_config')
     def gconfig():
-        version = request.headers.get("X-global_config_version")
+        version = request.headers.get("X-global-config-version")
         if not version:
             return {'global_config' : 'no version given'}, status.HTTP_404_NOT_FOUND
 
-        key = request.headers.get("X-global_config_key")
+        key = request.headers.get("X-global-config-key")
         if not key:
             return {'global_config' : 'no key supplied'}, status.HTTP_403_FORBIDDEN
 
@@ -73,11 +73,11 @@ def create_app(test_config=None):
 
     @app.route('/api/v1/local_config')
     def lconfig():
-        version = request.headers.get("X-config_version")
+        version = request.headers.get("X-config-version")
         if not version:
             return {'local_config' : 'no version given'}, status.HTTP_404_NOT_FOUND
 
-        chip_id = request.headers.get("X-chip_id")
+        chip_id = request.headers.get("X-chip-id")
         if not chip_id:
             return {'local_config' : 'no CHIP ID given'}, status.HTTP_404_NOT_FOUND
 
