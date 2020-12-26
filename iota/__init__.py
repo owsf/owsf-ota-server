@@ -83,7 +83,7 @@ def create_app(test_config=None):
 
         local_conf = None
         try:
-            with open(os.path.join(app.instance_path, "config.js.%s" % (chip_id)), "rb") as f:
+            with open(os.path.join(app.instance_path, "config.json.%s" % (chip_id)), "rb") as f:
                 local_conf = f.read()
         except OSError:
             return {'local_config' : 'config for chip id not found'}, status.HTTP_404_NOT_FOUND
@@ -106,7 +106,7 @@ def create_app(test_config=None):
             return {'firmware' : 'no version given'}, status.HTTP_404_NOT_FOUND
 
         try:
-            with open(os.path.join(app.instance_path, "firmware.js")) as f:
+            with open(os.path.join(app.instance_path, "firmware.json")) as f:
                 j = json.load(f)
         except OSError:
             return {}, status.HTTP_404_NOT_FOUND
