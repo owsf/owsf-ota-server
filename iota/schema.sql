@@ -18,7 +18,9 @@ CREATE TABLE tokens (
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 	name VARCHAR(512) NOT NULL,
 	token VARCHAR(512) NOT NULL,
-	permissions VARCHAR(16) NOT NULL
+	permissions VARCHAR(16)
 );
 CREATE UNIQUE INDEX unique_token_name ON tokens (name);
 CREATE INDEX token ON tokens (token);
+
+INSERT INTO tokens (name, token, permissions) VALUES ("admin", "$argon2id$v=19$m=65536,t=2,p=1$bUIXjfewRvbW7B1aEd+Mxw$Q3aeaari5GqwojBAlqVf0X0IyFcGzwrBPFqds5lmnWk", "arw")
