@@ -17,6 +17,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
+        DEPLOY_KEY='deploy',
     )
 
     if test_config is None:
@@ -35,6 +36,26 @@ def create_app(test_config=None):
     @app.route('/api/v1')
     def landing():
         return 'Hello, World!'
+
+    @app.route('/api/v1/deploy/<string:item>', methods=['PUT'])
+    def deploy(item):
+        if len(app.config["DEPLOY_KEY"]) < 32:
+            return {'deploy' : 'not configured'}, status.HTTP_404_NOT_FOUND
+
+        key = request.headers.get("X-deploy-key")
+        if not key:
+            return {'deploy' : 'no token/key supplied'}, status.HTTP_403_FORBIDDEN
+
+
+        target = escape(item)
+        if target == "firmware":
+            pass
+        elif target == "global_config":
+            pass
+        elif target == "config":
+            pass
+        else:
+            return {'deploy' : 'invalid item'}, status.HTTP_404_NOT_FOUND
 
     @app.route('/api/v1/global_config')
     def gconfig():
