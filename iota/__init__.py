@@ -18,7 +18,8 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         DEPLOY_KEY='deploy',
-    )
+        DATABASE=os.path.join(app.instance_path, 'iota.sqlite'),	
+	    )
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -167,5 +168,8 @@ def create_app(test_config=None):
             fw = f.read()
 
         return fw, status.HTTP_200_OK
+
+    from .db import init_app as db_init_app
+    db_init_app(app)
 
     return app
