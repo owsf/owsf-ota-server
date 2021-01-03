@@ -38,6 +38,9 @@ def create_app(test_config=None):
     def landing():
         return 'Hello, World!'
 
+    from . import token
+    app.register_blueprint(token.bp)
+
     @app.route('/api/v1/deploy/<string:item>', methods=['PUT'])
     def deploy(item):
         if len(app.config["DEPLOY_KEY"]) < 32:
