@@ -72,7 +72,41 @@ def deploy_firmware():
     if not verify(token, access="w"):
         return {'deploy' : 'not authorized'}, status.HTTP_401_UNAUTHORIZED
 
-    return {}
+    new_version = request.headers.get("X-firmware_version")
+    if not new_version:
+        return {"deploy": "no firmware version specified"}
+
+    try:
+        with open(os.path.join(app.instance_path, "firmware.json")) as f:
+            j = json.load(f)
+    except OSError:
+        j = {"version": "0.0"}
+    except json.JSONDecodeError as e:
+        j = {"version": "0.0"}
+
+    if "version" in j.keys():
+        current_version = j["version"]
+
+    if vercmp(current_version, new_version) <= 0:
+        return {"deploy", "current firmware version >= new firmware version"}, \
+            status.HTTP_304_NOT_MODIFIED
+
+    new_firmware = request.get_json()
+    if not "firmware" in new_firmware.keys():
+        return {'deploy': 'no firmware in request'}, status.HTTP_400_BAD_REQUEST
+
+    new_firmware = base64.b64decode(new_firmware["firmware"])
+    # TODO test signature
+    try:
+        with open(firmware_file, "wb") as f:
+            f.write(new_firmware)
+    except OSError as e:
+        print(e)
+        return {"firmware": "failed to write new firmware"}, \
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return {"firmware": "successfully deployed"},\
+        status.HTTP_201_CREATED
 
 
 @bp.route('/local_config', methods=['PUT'])
