@@ -4,7 +4,6 @@
 # SPDX-License-Identifier: MIT
 #
 import base64
-import functools
 import json
 import nacl.pwhash
 import nacl.utils
@@ -14,12 +13,7 @@ import re
 from flask import (
     Blueprint,
     current_app,
-    flash,
-    g,
-    redirect,
     request,
-    session,
-    url_for
 )
 from flask_api import status
 
