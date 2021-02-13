@@ -5,12 +5,13 @@
 #
 from flask import Flask, request, json, escape
 from flask_api import status
-from packaging.version import parse as parse_version
 import base64
 import json
 import nacl.secret
 import nacl.utils
 import os
+
+from .deploy import vercmp
 
 def create_app(test_config=None):
     # create and configure the app
@@ -120,19 +121,12 @@ def create_app(test_config=None):
         except json.JSONDecodeError as e:
             return {}, status.HTTP_404_NOT_FOUND
 
-        vremote = None
-        vlocal = None
-        try:
-            vlocal = parse_version(j["version"])
-        except ValueError:
-            pass
+        if "version" in j.keys():
+            server_version = j["version"]
+        else:
+            server_version = "0.0"
 
-        try:
-            vremote = parse_version(version)
-        except ValueError:
-            pass
-
-        if vremote and vlocal and vremote >= vlocal :
+        if vercmp(version, server_version) <= 0:
             return {}, status.HTTP_304_NOT_MODIFIED
 
         try:

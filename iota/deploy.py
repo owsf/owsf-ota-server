@@ -25,6 +25,45 @@ from flask_api import status
 
 from iota.token import verify
 
+def _verprep(v):
+    v = v.lstrip().rstrip()
+    v = re.sub(r"[^0-9._+-]+?", "", v)
+    return v
+
+def v2l(v):
+    l = v.split(".")
+    for i in range(0, len(l)):
+        l[i] = re.sub(r"[_+-]+?", ".", l[i])
+        l[i] = l[i].split(".")
+
+    return l
+
+def vercmp(v1, v2):
+    v1 = v2l(_verprep(v1))
+    v2 = v2l(_verprep(v2))
+
+    cmp = 0
+    for i in range(0, min(len(v1), len(v2))):
+        for j in range(0, min(len(v1[i]), len(v2[i]))):
+            if v1[i][j] < v2[i][j]:
+                cmp = 1
+                break
+            elif v1[i][j] > v2[i][j]:
+                cmp = -1
+                break
+        if cmp == 0 and len(v1[i]) != len(v2[i]):
+            cmp = 1 if len(v1) < len(v2) else -1
+        if cmp != 0:
+            break
+
+    if cmp == 0 and len(v1) == len(v2):
+        return 0
+    elif cmp == 0 and len(v1) != len(v2):
+        return 1 if len(v1) < len(v2) else -1
+    else:
+        return cmp
+
+
 bp = Blueprint('deploy', __name__, url_prefix='/api/v1/deploy')
 
 @bp.route('/firmware', methods=['PUT'])
