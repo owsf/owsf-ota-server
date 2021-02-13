@@ -7,7 +7,6 @@
 #  https://flask.palletsprojects.com/en/1.1.x/tutorial/
 #
 import base64
-import functools
 import nacl.pwhash
 import nacl.utils
 import re
@@ -15,12 +14,7 @@ import sqlite3
 
 from flask import (
     Blueprint,
-    flash,
-    g,
-    redirect,
     request,
-    session,
-    url_for
 )
 from flask_api import status
 

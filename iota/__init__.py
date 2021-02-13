@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
-from flask import Flask, request, json, escape
+from flask import Flask, request, json
 from flask_api import status
 import base64
 import json
