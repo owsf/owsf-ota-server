@@ -71,6 +71,7 @@ def new_token(token_name, token_perm):
                     VALUES (?, ?, ?)", (token_name, token, token_perm,))
         db.commit()
     except sqlite3.Error as e:
+        print(e)
         return {}, status.HTTP_409_CONFLICT
 
     return {"name": token_name,
@@ -91,6 +92,7 @@ def update_token(token_name, token_perm, token_regen):
                        (token, token_perm, token_name,))
             db.commit()
         except sqlite3.Error as e:
+            print(e)
             return {}, status.HTTP_400_BAD_REQUEST
     elif token_regen:
         token = gen_token()
@@ -99,6 +101,7 @@ def update_token(token_name, token_perm, token_regen):
                        (token, token_name,))
             db.commit()
         except sqlite3.Error as e:
+            print(e)
             return {}, status.HTTP_400_BAD_REQUEST
     elif token_perm and len(token_perm) > 0:
         try:
@@ -106,6 +109,7 @@ def update_token(token_name, token_perm, token_regen):
                        (token_perm, token_name,))
             db.commit()
         except sqlite3.Error as e:
+            print(e)
             return {}, status.HTTP_400_BAD_REQUEST
     else:
         return {}, status.HTTP_400_BAD_REQUEST
@@ -124,6 +128,7 @@ def delete_token(token_name):
                    (token_name,))
         db.commit()
     except sqlite3.Error as e:
+        print(e)
         return {}, status.HTTP_400_BAD_REQUEST
 
     return {}, status.HTTP_202_ACCEPTED
