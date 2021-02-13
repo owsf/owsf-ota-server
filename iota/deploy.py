@@ -87,11 +87,7 @@ def deploy_firmware():
         return {"deploy", "current firmware version >= new firmware version"}, \
             status.HTTP_304_NOT_MODIFIED
 
-    new_firmware = request.get_json()
-    if not "firmware" in new_firmware.keys():
-        return {'deploy': 'no firmware in request'}, status.HTTP_400_BAD_REQUEST
-
-    new_firmware = base64.b64decode(new_firmware["firmware"])
+    new_firmware = base64.b64decode(request.get_data())
     # TODO test signature
     firmware_name = "firmware_%s.sig" % (new_version)
     firmware_file = os.path.join(current_app.instance_path, firmware_name)
