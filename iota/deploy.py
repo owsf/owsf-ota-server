@@ -85,4 +85,56 @@ def deploy_global_config():
     if not verify(token, access="w"):
         return {'deploy' : 'not authorized'}, status.HTTP_401_UNAUTHORIZED
 
-    return {}
+    key = request.headers.get("X-global-config-key")
+    if not key:
+        return {'global_config' : 'no key supplied'}, status.HTTP_403_FORBIDDEN
+
+    key = base64.b64decode(key)
+    if len(key) != 32:
+        return {'global_config' : 'invalid key'}, status.HTTP_403_FORBIDDEN
+
+    global_conf = None
+    config_file = os.path.join(current_app.instance_path, "global_config.enc")
+    try:
+        with open(config_file, "rb") as f:
+            global_conf = f.read()
+    except OSError:
+        pass
+
+    box = nacl.secret.SecretBox(key)
+    if global_conf:
+        global_conf = box.decrypt(global_conf)
+    else:
+        global_conf = b"{}"
+
+    j = None
+    try:
+        j = json.loads(global_conf.decode("utf-8"))
+    except json.JSONDecodeError as e:
+        j = {'config_version': 0}
+
+    new_config = request.get_json()
+    if not "global_config_version" in new_config.keys():
+        return {"global_config": "no version in new file"},\
+            status.HTTP_400_BAD_REQUEST
+
+    new_version = int(new_config['global_config_version'])
+    if "global_config_version" in j.keys():
+        current_version = int(j["global_config_version"])
+    else:
+        current_version = 0
+
+    if new_version <= current_version:
+        return {'global_config' : 'new version <= current version'}, \
+            status.HTTP_304_NOT_MODIFIED
+
+    try:
+        with open(config_file, "wb") as f:
+            plaintext = json.dumps(new_config, indent=4).encode("utf-8")
+            f.write(box.encrypt(plaintext))
+    except OSError as eos:
+        print(eos)
+        return {'global_config': 'failed to write config'},\
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+
+    return {'global_config': 'sucessfully deployed'}, status.HTTP_201_CREATED
