@@ -94,9 +94,12 @@ def deploy_firmware():
     # TODO test signature
     firmware_name = "firmware_%s.sig" % (new_version)
     firmware_file = os.path.join(current_app.instance_path, firmware_name)
+    j = {"version": new_version, "file": firmware_name}
     try:
         with open(firmware_file, "wb") as f:
             f.write(new_firmware)
+        with open(config_file, "w") as f:
+            f.write(json.dumps(j, indent=4))
     except OSError as e:
         print(e)
         return {"firmware": "failed to write new firmware"}, \
