@@ -40,25 +40,8 @@ def create_app(test_config=None):
     from . import token
     app.register_blueprint(token.bp)
 
-    @app.route('/api/v1/deploy/<string:item>', methods=['PUT'])
-    def deploy(item):
-        if len(app.config["DEPLOY_KEY"]) < 32:
-            return {'deploy' : 'not configured'}, status.HTTP_404_NOT_FOUND
-
-        key = request.headers.get("X-deploy-key")
-        if not key:
-            return {'deploy' : 'no token/key supplied'}, status.HTTP_403_FORBIDDEN
-
-
-        target = escape(item)
-        if target == "firmware":
-            pass
-        elif target == "global_config":
-            pass
-        elif target == "config":
-            pass
-        else:
-            return {'deploy' : 'invalid item'}, status.HTTP_404_NOT_FOUND
+    from . import deploy
+    app.register_blueprint(deploy.bp)
 
     @app.route('/api/v1/global_config')
     def gconfig():
