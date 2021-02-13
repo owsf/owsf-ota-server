@@ -89,7 +89,7 @@ def deploy_firmware():
 
     new_firmware = base64.b64decode(request.get_data())
     # TODO test signature
-    firmware_name = "firmware_%s.sig" % (new_version)
+    firmware_name = "firmware.sig"
     firmware_file = os.path.join(current_app.instance_path, firmware_name)
     j = {"version": new_version, "file": firmware_name}
     try:
