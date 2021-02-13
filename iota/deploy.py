@@ -68,7 +68,8 @@ def deploy_firmware():
 
     new_version = request.headers.get("X-firmware_version")
     if not new_version:
-        return {"deploy": "no firmware version specified"}
+        return {"deploy": "no firmware version specified"},\
+            status.HTTP_400_BAD_REQUEST
 
     config_file = os.path.join(current_app.instance_path, "firmware.json")
     try:
