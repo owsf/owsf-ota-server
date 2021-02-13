@@ -7,7 +7,7 @@ from setuptools import setup
 setup(
     name="iota",
     version="1.0.0",
-    url="http://flask.pocoo.org/docs/tutorial/",
+    url="https://github.com/junkdna/esp8266-control-server",
     license="BSD",
     maintainer="Tillmann Heidsieck",
     maintainer_email="theidsieck@leenox.de",
