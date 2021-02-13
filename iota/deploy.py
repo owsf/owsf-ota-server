@@ -70,8 +70,9 @@ def deploy_firmware():
     if not new_version:
         return {"deploy": "no firmware version specified"}
 
+    config_file = os.path.join(current_app.instance_path, "firmware.json")
     try:
-        with open(os.path.join(app.instance_path, "firmware.json")) as f:
+        with open(config_file, "rb") as f:
             j = json.load(f)
     except OSError:
         j = {"version": "0.0"}
