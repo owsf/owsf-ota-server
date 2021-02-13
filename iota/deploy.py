@@ -84,7 +84,7 @@ def deploy_firmware():
         current_version = j["version"]
 
     if vercmp(current_version, new_version) <= 0:
-        return {"deploy", "current firmware version >= new firmware version"}, \
+        return {'deploy': 'current firmware version >= new firmware version'}, \
             status.HTTP_304_NOT_MODIFIED
 
     new_firmware = base64.b64decode(request.get_data())
