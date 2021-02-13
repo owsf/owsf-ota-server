@@ -23,4 +23,4 @@ CREATE TABLE tokens (
 CREATE UNIQUE INDEX unique_token_name ON tokens (name);
 CREATE INDEX token ON tokens (token);
 
-INSERT INTO tokens (name, token, permissions) VALUES ("admin", "$argon2id$v=19$m=65536,t=2,p=1$bUIXjfewRvbW7B1aEd+Mxw$Q3aeaari5GqwojBAlqVf0X0IyFcGzwrBPFqds5lmnWk", "arw")
+INSERT INTO tokens (name, token, permissions) VALUES ("admin", "$argon2id$v=19$m=65536,t=2,p=1$bUIXjfewRvbW7B1aEd+Mxw$Q3aeaari5GqwojBAlqVf0X0IyFcGzwrBPFqds5lmnWk", "arw");
