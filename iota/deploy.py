@@ -76,7 +76,7 @@ def deploy_firmware():
             j = json.load(f)
     except OSError:
         j = {"version": "0.0"}
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         j = {"version": "0.0"}
 
     if "version" in j.keys():
@@ -126,7 +126,7 @@ def deploy_local_config():
     j = None
     try:
         j = json.loads(local_conf)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         j = {'config_version': 0}
 
     new_config = request.get_json()
@@ -178,7 +178,7 @@ def deploy_global_config():
     j = None
     try:
         j = json.loads(global_conf.decode("utf-8"))
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         j = {'config_version': 0}
 
     new_config = request.get_json()
