@@ -27,9 +27,13 @@ def check_hash(token_name, token):
         return False
 
     db = get_db()
-    result = db.execute("SELECT ? = token FROM tokens WHERE name = ?",
-                        (token, token_name,))
-    return True if result == 1 else False
+    result = db.execute("SELECT token FROM tokens WHERE name = ?",
+                        (token_name,)).fetchone()
+
+    if not result:
+        return False
+
+    return True if nacl.pwhash.verify(result["token"], token) else False
 
 
 def verify(token, access="r"):
@@ -37,11 +41,18 @@ def verify(token, access="r"):
         return False
 
     db = get_db()
-    result = db.execute("SELECT id FROM tokens WHERE token = ? \
-                        AND permissions LIKE ? OR permissions LIKE '%%a%%' LIMIT 1",
-                        (token, "%%" + access + "%%",))
+    result = db.execute("SELECT token FROM tokens WHERE permissions LIKE ? OR \
+                        permissions LIKE '%%a%%' LIMIT 1",
+                        ("%%" + access + "%%",)).fetchall()
 
-    return True if result else False
+    if not result:
+        return False
+
+    for r in result:
+        if nacl.pwhash.verify(r["token"], token):
+            return True
+
+    return False
 
 
 def show_token(token_name=None):
@@ -68,7 +79,7 @@ def new_token(token_name, token_perm):
     token_perm = re.sub(r"[^arw]", "", token_perm)
     try:
         db.execute("INSERT INTO tokens (name, token, permissions) \
-                    VALUES (?, ?, ?)", (token_name, token, token_perm,))
+                    VALUES (?, ?, ?)", (token_name, nacl.pwhash.str(token), token_perm,))
         db.commit()
     except sqlite3.Error as e:
         print(e)
@@ -89,7 +100,7 @@ def update_token(token_name, token_perm, token_regen):
         try:
             db.execute("UPDATE tokens SET token = ?, permissions = ? \
                         WHERE name = ?",
-                       (token, token_perm, token_name,))
+                       (nacl.pwhash.str(token), token_perm, token_name,))
             db.commit()
         except sqlite3.Error as e:
             print(e)
@@ -98,7 +109,7 @@ def update_token(token_name, token_perm, token_regen):
         token = gen_token()
         try:
             db.execute("UPDATE tokens SET token = ? WHERE name = ?",
-                       (token, token_name,))
+                       (nacl.pwhash.str(token), token_name,))
             db.commit()
         except sqlite3.Error as e:
             print(e)
