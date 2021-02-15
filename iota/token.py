@@ -153,7 +153,7 @@ def delete_token(token_name):
 def token():
     token = request.headers.get("X-auth-token")
     if not verify(token, "r"):
-        return status.HTTP_403_FORBIDDEN
+        return {}, status.HTTP_403_FORBIDDEN
 
     content = request.get_json()
     token_name = None
