@@ -33,8 +33,10 @@ def check_hash(token_name, token):
     if not result:
         return False
 
-    return True if nacl.pwhash.verify(result["token"], token) else False
-
+    try:
+        return nacl.pwhash.verify(str(result["token"]), token)
+    except nacl.exceptions.InvalidkeyError:
+        return False
 
 def verify(token, access="r"):
     if not token or len(token) < 32 or not access or len(access) < 1:
@@ -49,8 +51,10 @@ def verify(token, access="r"):
         return False
 
     for r in result:
-        if nacl.pwhash.verify(r["token"], token):
-            return True
+        try:
+            return nacl.pwhash.verify(r["token"], token)
+        except:
+            pass
 
     return False
 
