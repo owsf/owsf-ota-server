@@ -25,13 +25,13 @@ def test_token_get(client):
         "X-auth-token": "INVALID BUT REALY LONG TOKEN FOR TESTING",
     }
     reply = client.get('/api/v1/token', headers=headers)
-    assert reply == 403
+    assert reply.status_code == 403
 
     headers = {
         "X-auth-token": READER_TOKEN,
     }
     reply = client.get('/api/v1/token', headers=headers)
-    assert reply == 404
+    assert reply.status_code == 404
 
     headers = {
         "X-auth-token": READER_TOKEN,
@@ -41,14 +41,14 @@ def test_token_get(client):
     })
     reply = client.get('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 200
+    assert reply.status_code == 200
     assert b"reader" in reply.data
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
     }
     reply = client.get('/api/v1/token', headers=headers)
-    assert reply == 200
+    assert reply.status_code == 200
     assert b"reader" in reply.data
     assert b"writer" in reply.data
     assert b"admin" in reply.data
@@ -64,7 +64,7 @@ def test_token_put(client):
     })
     reply = client.put('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 404
+    assert reply.status_code == 404
 
     headers = {
         "X-auth-token": WRITER_TOKEN,
@@ -75,7 +75,7 @@ def test_token_put(client):
     })
     reply = client.put('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 404
+    assert reply.status_code == 404
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
@@ -86,7 +86,7 @@ def test_token_put(client):
     })
     reply = client.put('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 201
+    assert reply.status_code == 201
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
@@ -97,13 +97,13 @@ def test_token_put(client):
     })
     reply = client.put('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 409
+    assert reply.status_code == 409
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
     }
     reply = client.get('/api/v1/token', headers=headers)
-    assert reply == 200
+    assert reply.status_code == 200
     assert b"test_token" in reply.data
 
 
@@ -122,17 +122,17 @@ def test_token_delete(client):
     })
     reply = client.put('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 201
+    assert reply.status_code == 201
 
     reply = client.delete('/api/v1/token', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 202
+    assert reply.status_code == 202
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
     }
     reply = client.get('/api/v1/token', headers=headers)
-    assert reply == 200
+    assert reply.status_code == 200
     assert b"test_token" not in reply.data
 
 
@@ -152,12 +152,12 @@ def test_deploy_local_config(client, app):
     })
     reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 201
+    assert reply.status_code == 201
     assert b"successfully" in reply.data
 
     reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
                        headers=headers, data=data)
-    assert reply == 304
+    assert reply.status_code == 304
     os.unlink(local_config_file)
 
 
