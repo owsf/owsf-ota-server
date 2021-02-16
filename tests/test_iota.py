@@ -55,8 +55,27 @@ def test_token_get(client):
 
 
 def test_token_put(client):
-    pass
+    headers = {
+        "X-auth-token": READER_TOKEN,
+    }
+    data = json.dumps({
+        "name": "test1",
+        "permissions": "arw",
+    })
+    reply = client.put('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 404
 
+    headers = {
+        "X-auth-token": WRITER_TOKEN,
+    }
+    data = json.dumps({
+        "name": "test1",
+        "permissions": "arw",
+    })
+    reply = client.put('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 404
 
 def test_token_update(client):
     pass
