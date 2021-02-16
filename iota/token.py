@@ -34,7 +34,10 @@ def check_hash(token_name, token):
         return False
 
     try:
-        return nacl.pwhash.verify(str(result["token"]), token)
+        pwhash = result["token"] if type(result["token"]) == "byte" else \
+            result["token"].encode("utf-8")
+        token = token if type(token) == "byte" else token.encode("utf-8")
+        return nacl.pwhash.verify(pwhash, token)
     except nacl.exceptions.InvalidkeyError:
         return False
 
@@ -43,17 +46,20 @@ def verify(token, access="r"):
         return False
 
     db = get_db()
-    result = db.execute("SELECT token FROM tokens WHERE permissions LIKE ? OR \
-                        permissions LIKE '%%a%%' LIMIT 1",
+    result = db.execute("SELECT name, token FROM tokens WHERE permissions LIKE ? OR \
+                        permissions LIKE '%%a%%'",
                         ("%%" + access + "%%",)).fetchall()
 
     if not result:
         return False
 
+    token = token if type(token) == "byte" else token.encode("utf-8")
     for r in result:
         try:
-            return nacl.pwhash.verify(r["token"], token)
-        except:
+            pwhash = r["token"] if type(r["token"]) == "byte" else \
+                r["token"].encode("utf-8")
+            return nacl.pwhash.verify(pwhash, token)
+        except nacl.exceptions.InvalidkeyError:
             pass
 
     return False
