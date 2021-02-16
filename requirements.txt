@@ -1,0 +1,6 @@
+Flask
+Flask-API
+Flask-DB
+Flask-Migrate
+PyNaCl
+pytest-flask
