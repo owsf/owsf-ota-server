@@ -50,6 +50,8 @@ def test_token_get(client):
     reply = client.get('/api/v1/token', headers=headers)
     assert reply == 200
     assert b"reader" in reply.data
+    assert b"writer" in reply.data
+    assert b"admin" in reply.data
 
 
 def test_token_put(client):
