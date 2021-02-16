@@ -151,7 +151,7 @@ def deploy_local_config():
         return {'local_config': 'failed to write config'}, \
             status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    return {'local_config': 'successfully deployed'}
+    return {'local_config': 'successfully deployed'}, status.HTTP_201_CREATED
 
 
 @bp.route('/global_config', methods=['PUT'])
