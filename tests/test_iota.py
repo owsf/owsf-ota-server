@@ -77,8 +77,9 @@ def test_token_put(client):
                        headers=headers, data=data)
     assert reply == 404
 
-def test_token_update(client):
-    pass
+# TODO client has no update() function
+#def test_token_update(client):
+#    pass
 
 
 def test_token_delete(client):
