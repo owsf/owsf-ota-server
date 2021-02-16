@@ -77,6 +77,36 @@ def test_token_put(client):
                        headers=headers, data=data)
     assert reply == 404
 
+    headers = {
+        "X-auth-token": ADMIN_TOKEN,
+    }
+    data = json.dumps({
+        "name": "test_token",
+        "permissions": "r",
+    })
+    reply = client.put('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 201
+
+    headers = {
+        "X-auth-token": ADMIN_TOKEN,
+    }
+    data = json.dumps({
+        "name": "test_token",
+        "permissions": "r",
+    })
+    reply = client.put('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 409
+
+    headers = {
+        "X-auth-token": ADMIN_TOKEN,
+    }
+    reply = client.get('/api/v1/token', headers=headers)
+    assert reply == 200
+    assert b"test_token" in reply.data
+
+
 # TODO client has no update() function
 #def test_token_update(client):
 #    pass
