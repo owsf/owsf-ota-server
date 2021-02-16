@@ -131,10 +131,15 @@ def deploy_local_config():
     except json.JSONDecodeError:
         j = {'config_version': 0}
 
-    new_config = request.get_json()
+    if not "config_version" in j.keys():
+        j = {'config_version': 0}
 
-    if "config_version" in new_config.keys() and \
-            int(new_config['config_version']) <= int(j["config_version"]):
+    new_config = request.get_json()
+    if not "config_version" in new_config.keys():
+        return {'local_config': 'no version given'}, status.HTTP_400_BAD_REQUEST
+
+
+    if int(new_config['config_version']) <= int(j["config_version"]):
         return {'local_config' : 'new version <= current version'}, \
             status.HTTP_404_NOT_FOUND
 
