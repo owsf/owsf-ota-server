@@ -136,8 +136,29 @@ def test_token_delete(client):
     assert b"test_token" not in reply.data
 
 
-def test_deploy_local_config(client):
-    pass
+def test_deploy_local_config(client, app):
+    local_config_file = os.path.join(os.path.dirname(__file__), "..",
+                                     "instance", "config.json.0x00000001")
+    if os.path.exists(local_config_file):
+        os.unlink(local_config_file)
+
+    headers = {
+        "X-auth-token": WRITER_TOKEN,
+        "X-chip-id": "0x00000001",
+    }
+    data = json.dumps({
+        "config_version": 1,
+        "name": "test sensor"
+    })
+    reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 201
+    assert b"successfully" in reply.data
+
+    reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 304
+    os.unlink(local_config_file)
 
 
 def test_deploy_global_config(client):
