@@ -141,7 +141,7 @@ def deploy_local_config():
 
     if int(new_config['config_version']) <= int(j["config_version"]):
         return {'local_config' : 'new version <= current version'}, \
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_304_NOT_MODIFIED
 
     try:
         with open(config_file, "w") as f:
