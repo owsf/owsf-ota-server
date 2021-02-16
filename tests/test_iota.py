@@ -113,7 +113,27 @@ def test_token_put(client):
 
 
 def test_token_delete(client):
-    pass
+    headers = {
+        "X-auth-token": ADMIN_TOKEN,
+    }
+    data = json.dumps({
+        "name": "test_token",
+        "permissions": "r",
+    })
+    reply = client.put('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 201
+
+    reply = client.delete('/api/v1/token', content_type="application/json",
+                       headers=headers, data=data)
+    assert reply == 202
+
+    headers = {
+        "X-auth-token": ADMIN_TOKEN,
+    }
+    reply = client.get('/api/v1/token', headers=headers)
+    assert reply == 200
+    assert b"test_token" not in reply.data
 
 
 def test_deploy_local_config(client):
