@@ -27,12 +27,12 @@ def _verprep(v):
 
 
 def v2l(v):
-    l = v.split(".")
-    for i in range(0, len(l)):
-        l[i] = re.sub(r"[_+-]+?", ".", l[i])
-        l[i] = l[i].split(".")
+    as_list = v.split(".")
+    for i in range(0, len(as_list)):
+        as_list[i] = re.sub(r"[_+-]+?", ".", as_list[i])
+        as_list[i] = as_list[i].split(".")
 
-    return l
+    return as_list
 
 
 def vercmp(v1, v2):
