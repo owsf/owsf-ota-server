@@ -8,6 +8,7 @@
 #
 from flask import (
     Blueprint,
+    current_app,
     request,
 )
 from flask_api import status
@@ -39,7 +40,7 @@ def gconfig():
         return {'global_config': 'invalid key'}, status.HTTP_403_FORBIDDEN
 
     ctext = None
-    config_file = os.path.join(app.instance_path, "global_config.enc")
+    config_file = os.path.join(current_app.instance_path, "global_config.enc")
     try:
         with open(config_file, "rb") as f:
             ctext = f.read()
@@ -77,7 +78,7 @@ def lconfig():
             status.HTTP_404_NOT_FOUND
 
     local_conf = None
-    config_file = os.path.join(app.instance_path,
+    config_file = os.path.join(current_app.instance_path,
                                "config.json.%s" % (chip_id))
     try:
         with open(config_file, "rb") as f:
@@ -106,7 +107,7 @@ def firmware():
         return {'firmware': 'no version given'}, status.HTTP_404_NOT_FOUND
 
     try:
-        with open(os.path.join(app.instance_path, "firmware.json")) as f:
+        with open(os.path.join(current_app.instance_path, "firmware.json")) as f:
             j = json.load(f)
     except OSError:
         return {}, status.HTTP_404_NOT_FOUND
@@ -127,10 +128,10 @@ def firmware():
         return {}, status.HTTP_404_NOT_FOUND
 
     if ffile[0] != "/":
-        if not os.path.exists(os.path.join(app.instance_path, ffile)):
+        if not os.path.exists(os.path.join(current_app.instance_path, ffile)):
             return {'firmware': "not found"}, status.HTTP_404_NOT_FOUND
         else:
-            ffile = os.path.join(app.instance_path, ffile)
+            ffile = os.path.join(current_app.instance_path, ffile)
 
     if ffile[0] == "/" and not os.path.exists(ffile):
         return {'firmware': "not found"}, status.HTTP_404_NOT_FOUND
