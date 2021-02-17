@@ -142,7 +142,6 @@ def deploy_local_config():
     if not "config_version" in new_config.keys():
         return {'local_config': 'no version given'}, status.HTTP_400_BAD_REQUEST
 
-
     if int(new_config['config_version']) <= int(j["config_version"]):
         return {'local_config': 'new version <= current version'}, \
             status.HTTP_304_NOT_MODIFIED
