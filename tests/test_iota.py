@@ -5,9 +5,6 @@
 #
 import json
 import os
-import tempfile
-
-import pytest
 
 ADMIN_TOKEN = \
     "QWw6kjrJY5xB4VSzWns+DZjM7Tda5CI9YlEmq43oTsQAeTHJpuG+gc4ZVr21hs+XkcXo5IQGix\
