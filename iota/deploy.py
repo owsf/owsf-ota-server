@@ -135,11 +135,11 @@ def deploy_local_config():
     except json.JSONDecodeError:
         j = {'config_version': 0}
 
-    if not "config_version" in j.keys():
+    if "config_version" not in j.keys():
         j = {'config_version': 0}
 
     new_config = request.get_json()
-    if not "config_version" in new_config.keys():
+    if "config_version" not in new_config.keys():
         return {'local_config': 'no version given'},\
             status.HTTP_400_BAD_REQUEST
 
@@ -193,7 +193,7 @@ def deploy_global_config():
         j = {'config_version': 0}
 
     new_config = request.get_json()
-    if not "global_config_version" in new_config.keys():
+    if "global_config_version" not in new_config.keys():
         return {"global_config": "no version in new file"},\
             status.HTTP_400_BAD_REQUEST
 
