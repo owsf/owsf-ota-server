@@ -107,8 +107,9 @@ def firmware():
     if not version:
         return {'firmware': 'no version given'}, status.HTTP_404_NOT_FOUND
 
+    firmware_json = os.path.join(current_app.instance_path, "firmware.json")
     try:
-        with open(os.path.join(current_app.instance_path, "firmware.json")) as f:
+        with open(firmware_json, "rb") as f:
             j = json.load(f)
     except OSError:
         return {}, status.HTTP_404_NOT_FOUND
