@@ -35,9 +35,11 @@ def check_hash(token_name, token):
         return False
 
     try:
-        pwhash = result["token"] if type(result["token"]) == "byte" else \
+        pwhash = result["token"] if \
+            isinstance(result["token"], (bytes, bytearray)) else \
             result["token"].encode("utf-8")
-        token = token if type(token) == "byte" else token.encode("utf-8")
+        token = token if isinstance(token, (bytes, bytearray)) \
+            else token.encode("utf-8")
         return nacl.pwhash.verify(pwhash, token)
     except nacl.exceptions.InvalidkeyError:
         return False
@@ -55,11 +57,12 @@ def verify(token, access="r"):
     if not result:
         return False
 
-    token = token if type(token) == "byte" else token.encode("utf-8")
+    token = token if isinstance(token, (bytes, bytearray)) \
+        else token.encode("utf-8")
     for r in result:
         try:
-            pwhash = r["token"] if type(r["token"]) == "byte" else \
-                r["token"].encode("utf-8")
+            pwhash = r["token"] if isinstance(r["token"], (bytes, bytearray))\
+                else r["token"].encode("utf-8")
             return nacl.pwhash.verify(pwhash, token)
         except nacl.exceptions.InvalidkeyError:
             pass
