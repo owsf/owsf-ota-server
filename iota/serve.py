@@ -55,7 +55,7 @@ def gconfig():
     j = None
     try:
         j = json.loads(plaintext.decode("utf-8"))
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         return {'global_config': 'failed to load'}, \
             status.HTTP_403_FORBIDDEN
 
@@ -91,7 +91,7 @@ def lconfig():
     j = None
     try:
         j = json.loads(local_conf)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         return {'local_config': 'failed to load'},\
             status.HTTP_500_INTERNAL_SERVER_ERROR
     if int(version) >= int(j["config_version"]):
@@ -113,7 +113,7 @@ def firmware():
             j = json.load(f)
     except OSError:
         return {}, status.HTTP_404_NOT_FOUND
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         return {}, status.HTTP_404_NOT_FOUND
 
     if "version" in j.keys():
