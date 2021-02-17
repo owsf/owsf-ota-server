@@ -88,7 +88,7 @@ def deploy_firmware():
         current_version = j["version"]
 
     if vercmp(current_version, new_version) <= 0:
-        return {'deploy': 'current firmware version >= new firmware version'}, \
+        return {'deploy': 'current firmware version >= new firmware version'},\
             status.HTTP_304_NOT_MODIFIED
 
     new_firmware = base64.b64decode(request.get_data())
@@ -140,7 +140,8 @@ def deploy_local_config():
 
     new_config = request.get_json()
     if not "config_version" in new_config.keys():
-        return {'local_config': 'no version given'}, status.HTTP_400_BAD_REQUEST
+        return {'local_config': 'no version given'},\
+            status.HTTP_400_BAD_REQUEST
 
     if int(new_config['config_version']) <= int(j["config_version"]):
         return {'local_config': 'new version <= current version'}, \
