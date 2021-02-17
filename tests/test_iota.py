@@ -150,12 +150,14 @@ def test_deploy_local_config(client, app):
         "config_version": 1,
         "name": "test sensor"
     })
-    reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
+    reply = client.put('/api/v1/deploy/local_config',
+                       content_type="application/json",
                        headers=headers, data=data)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
-    reply = client.put('/api/v1/deploy/local_config', content_type="application/json",
+    reply = client.put('/api/v1/deploy/local_config',
+                       content_type="application/json",
                        headers=headers, data=data)
     assert reply.status_code == 304
     os.unlink(local_config_file)
