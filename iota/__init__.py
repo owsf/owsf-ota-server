@@ -3,6 +3,11 @@
 #
 # SPDX-License-Identifier: MIT
 #
+"""IOTA -- a simple IOT OTA server
+
+This module defines a simple server for IOT OTA updates of firmware and
+configuration.
+"""
 from flask import Flask
 import os
 
