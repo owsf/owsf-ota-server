@@ -20,6 +20,8 @@ import os
 from .deploy import vercmp
 
 bp = Blueprint('serve', __name__, url_prefix='/api/v1')
+
+
 @bp.route('/global_config')
 def gconfig():
     version = request.headers.get("X-global-config-version")
@@ -60,6 +62,7 @@ def gconfig():
             status.HTTP_404_NOT_FOUND
 
     return plaintext, status.HTTP_200_OK
+
 
 @bp.route('/local_config')
 def lconfig():

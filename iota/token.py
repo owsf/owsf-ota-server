@@ -22,6 +22,7 @@ from iota.db import get_db
 
 bp = Blueprint('token', __name__, url_prefix='/api/v1')
 
+
 def check_hash(token_name, token):
     if not token_name or not token or len(token_name) == 0 or len(token) < 32:
         return False
@@ -40,6 +41,7 @@ def check_hash(token_name, token):
         return nacl.pwhash.verify(pwhash, token)
     except nacl.exceptions.InvalidkeyError:
         return False
+
 
 def verify(token, access="r"):
     if not token or len(token) < 32 or not access or len(access) < 1:
@@ -84,6 +86,7 @@ def show_token(token_name=None):
 
 def gen_token(nbytes=64):
     return base64.b64encode(nacl.utils.random(nbytes))
+
 
 def new_token(token_name, token_perm):
     db = get_db()
