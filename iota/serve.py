@@ -24,17 +24,17 @@ bp = Blueprint('serve', __name__, url_prefix='/api/v1')
 def gconfig():
     version = request.headers.get("X-global-config-version")
     if not version:
-        return {'global_config' : 'no version given'}, \
+        return {'global_config': 'no version given'}, \
             status.HTTP_404_NOT_FOUND
 
     key = request.headers.get("X-global-config-key")
     if not key:
-        return {'global_config' : 'no key supplied'}, \
+        return {'global_config': 'no key supplied'}, \
             status.HTTP_403_FORBIDDEN
 
     key = base64.b64decode(key)
     if len(key) != 32:
-        return {'global_config' : 'invalid key'}, status.HTTP_403_FORBIDDEN
+        return {'global_config': 'invalid key'}, status.HTTP_403_FORBIDDEN
 
     ctext = None
     config_file = os.path.join(app.instance_path, "global_config.enc")
@@ -42,7 +42,7 @@ def gconfig():
         with open(config_file, "rb") as f:
             ctext = f.read()
     except OSError:
-        return {'global_config' : 'invalid key'}, \
+        return {'global_config': 'invalid key'}, \
             status.HTTP_503_SERVICE_UNAVAILABLE
 
     box = nacl.secret.SecretBox(key)
@@ -52,11 +52,11 @@ def gconfig():
     try:
         j = json.loads(plaintext.decode("utf-8"))
     except json.JSONDecodeError as e:
-        return {'global_config' : 'failed to load'}, \
+        return {'global_config': 'failed to load'}, \
             status.HTTP_403_FORBIDDEN
 
     if int(version) >= int(j["global_config_version"]):
-        return {'global_config' : 'no version new version'}, \
+        return {'global_config': 'no version new version'}, \
             status.HTTP_404_NOT_FOUND
 
     return plaintext, status.HTTP_200_OK
@@ -65,12 +65,12 @@ def gconfig():
 def lconfig():
     version = request.headers.get("X-config-version")
     if not version:
-        return {'local_config' : 'no version given'}, \
+        return {'local_config': 'no version given'}, \
             status.HTTP_404_NOT_FOUND
 
     chip_id = request.headers.get("X-chip-id")
     if not chip_id:
-        return {'local_config' : 'no CHIP ID given'}, \
+        return {'local_config': 'no CHIP ID given'}, \
             status.HTTP_404_NOT_FOUND
 
     local_conf = None
@@ -80,17 +80,17 @@ def lconfig():
         with open(config_file, "rb") as f:
             local_conf = f.read()
     except OSError:
-        return {'local_config' : 'config for chip id not found'},\
+        return {'local_config': 'config for chip id not found'},\
             status.HTTP_404_NOT_FOUND
 
     j = None
     try:
         j = json.loads(local_conf)
     except json.JSONDecodeError as e:
-        return {'local_config' : 'failed to load'},\
+        return {'local_config': 'failed to load'},\
             status.HTTP_500_INTERNAL_SERVER_ERROR
     if int(version) >= int(j["config_version"]):
-        return {'local_config' : 'no version new version'},\
+        return {'local_config': 'no version new version'},\
             status.HTTP_404_NOT_FOUND
 
     return local_conf, status.HTTP_200_OK
@@ -100,7 +100,7 @@ def lconfig():
 def firmware():
     version = request.headers.get("X-ESP8266-version")
     if not version:
-        return {'firmware' : 'no version given'}, status.HTTP_404_NOT_FOUND
+        return {'firmware': 'no version given'}, status.HTTP_404_NOT_FOUND
 
     try:
         with open(os.path.join(app.instance_path, "firmware.json")) as f:

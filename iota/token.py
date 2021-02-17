@@ -78,7 +78,7 @@ def show_token(token_name=None):
     if not result:
         return {}, status.HTTP_404_NOT_FOUND
 
-    return {"tokens" : [{"name": r["name"],
+    return {"tokens": [{"name": r["name"],
          "permissions": r["permissions"]} for r in result]}, status.HTTP_200_OK
 
 
