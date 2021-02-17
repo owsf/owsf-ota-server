@@ -46,8 +46,8 @@ def verify(token, access="r"):
         return False
 
     db = get_db()
-    result = db.execute("SELECT name, token FROM tokens WHERE permissions LIKE ? OR \
-                        permissions LIKE '%%a%%'",
+    result = db.execute("SELECT name, token FROM tokens WHERE \
+                        permissions LIKE ? OR permissions LIKE '%%a%%'",
                         ("%%" + access + "%%",)).fetchall()
 
     if not result:
@@ -69,7 +69,8 @@ def show_token(token_name=None):
     result = None
     db = get_db()
     if token_name:
-        result = db.execute("SELECT name,permissions FROM tokens WHERE name = ?",
+        result = db.execute("SELECT name,permissions FROM tokens WHERE \
+                            name = ?",
                             (token_name,)).fetchone()
     else:
         result = db.execute("SELECT name,permissions FROM tokens").fetchall()
@@ -77,7 +78,8 @@ def show_token(token_name=None):
     if not result:
         return {}, status.HTTP_404_NOT_FOUND
 
-    return {"tokens" : [{"name": r["name"], "permissions": r["permissions"]} for r in result]}, status.HTTP_200_OK
+    return {"tokens" : [{"name": r["name"],
+         "permissions": r["permissions"]} for r in result]}, status.HTTP_200_OK
 
 
 def gen_token(nbytes=64):
@@ -89,7 +91,8 @@ def new_token(token_name, token_perm):
     token_perm = re.sub(r"[^arw]", "", token_perm)
     try:
         db.execute("INSERT INTO tokens (name, token, permissions) \
-                    VALUES (?, ?, ?)", (token_name, nacl.pwhash.str(token), token_perm,))
+                    VALUES (?, ?, ?)",
+                   (token_name, nacl.pwhash.str(token), token_perm,))
         db.commit()
     except sqlite3.Error as e:
         print(e)
