@@ -64,7 +64,7 @@ bp = Blueprint('deploy', __name__, url_prefix='/api/v1/deploy')
 def deploy_firmware():
     token = request.headers.get("X-auth-token")
     if not verify(token, access="w"):
-        return {'deploy' : 'not authorized'}, status.HTTP_401_UNAUTHORIZED
+        return {'deploy': 'not authorized'}, status.HTTP_401_UNAUTHORIZED
 
     new_version = request.headers.get("X-firmware_version")
     if not new_version:
@@ -110,11 +110,11 @@ def deploy_firmware():
 def deploy_local_config():
     token = request.headers.get("X-auth-token")
     if not verify(token, access="w"):
-        return {'deploy' : 'not authorized'}, status.HTTP_401_UNAUTHORIZED
+        return {'deploy': 'not authorized'}, status.HTTP_401_UNAUTHORIZED
 
     chip_id = request.headers.get("X-chip-id")
     if not chip_id:
-        return {'local_config' : 'no CHIP ID given'}, status.HTTP_404_NOT_FOUND
+        return {'local_config': 'no CHIP ID given'}, status.HTTP_404_NOT_FOUND
 
     local_conf = None
     config_file = os.path.join(current_app.instance_path,
@@ -140,7 +140,7 @@ def deploy_local_config():
 
 
     if int(new_config['config_version']) <= int(j["config_version"]):
-        return {'local_config' : 'new version <= current version'}, \
+        return {'local_config': 'new version <= current version'}, \
             status.HTTP_304_NOT_MODIFIED
 
     try:
@@ -158,15 +158,15 @@ def deploy_local_config():
 def deploy_global_config():
     token = request.headers.get("X-auth-token")
     if not verify(token, access="w"):
-        return {'deploy' : 'not authorized'}, status.HTTP_401_UNAUTHORIZED
+        return {'deploy': 'not authorized'}, status.HTTP_401_UNAUTHORIZED
 
     key = request.headers.get("X-global-config-key")
     if not key:
-        return {'global_config' : 'no key supplied'}, status.HTTP_403_FORBIDDEN
+        return {'global_config': 'no key supplied'}, status.HTTP_403_FORBIDDEN
 
     key = base64.b64decode(key)
     if len(key) != 32:
-        return {'global_config' : 'invalid key'}, status.HTTP_403_FORBIDDEN
+        return {'global_config': 'invalid key'}, status.HTTP_403_FORBIDDEN
 
     global_conf = None
     config_file = os.path.join(current_app.instance_path, "global_config.enc")
@@ -200,7 +200,7 @@ def deploy_global_config():
         current_version = 0
 
     if new_version <= current_version:
-        return {'global_config' : 'new version <= current version'}, \
+        return {'global_config': 'new version <= current version'}, \
             status.HTTP_304_NOT_MODIFIED
 
     try:
