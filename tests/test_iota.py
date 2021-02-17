@@ -105,9 +105,7 @@ def test_token_put(client):
 
 
 # TODO client has no update() function
-#def test_token_update(client):
-#    pass
-
+# implement update() function and the /api/v1/token UPDATE tests
 
 def test_token_delete(client):
     headers = {
