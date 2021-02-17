@@ -125,7 +125,7 @@ def test_token_delete(client):
     assert reply.status_code == 201
 
     reply = client.delete('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+                          headers=headers, data=data)
     assert reply.status_code == 202
 
     headers = {

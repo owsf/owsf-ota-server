@@ -80,8 +80,8 @@ def show_token(token_name=None):
     if not result:
         return {}, status.HTTP_404_NOT_FOUND
 
-    return {"tokens": [{"name": r["name"],
-         "permissions": r["permissions"]} for r in result]}, status.HTTP_200_OK
+    return {"tokens": [{"name": r["name"], "permissions": r["permissions"]}
+                       for r in result]}, status.HTTP_200_OK
 
 
 def gen_token(nbytes=64):
@@ -144,7 +144,7 @@ def update_token(token_name, token_perm, token_regen):
     return {"name": token_name,
             "token": token if token_regen else "***",
             "permissions": token_perm if token_perm else "***"},\
-            status.HTTP_200_OK
+        status.HTTP_200_OK
 
 
 def delete_token(token_name):
