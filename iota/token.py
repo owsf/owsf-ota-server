@@ -102,7 +102,7 @@ def new_token(token_name, token_perm):
         return {}, status.HTTP_409_CONFLICT
 
     return {"name": token_name,
-            "token": token,
+            "token": token.decode(),
             "permissions": token_perm}, status.HTTP_201_CREATED
 
 

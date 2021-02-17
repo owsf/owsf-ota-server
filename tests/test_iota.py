@@ -32,12 +32,12 @@ def test_token_get(client):
 
     headers = {
         "X-auth-token": READER_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "reader"
     })
-    reply = client.get('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+    reply = client.get('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 200
     assert b"reader" in reply.data
 
@@ -54,45 +54,46 @@ def test_token_get(client):
 def test_token_put(client):
     headers = {
         "X-auth-token": READER_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "test1",
         "permissions": "arw",
     })
-    reply = client.put('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+    reply = client.put('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 404
 
     headers = {
         "X-auth-token": WRITER_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "test1",
         "permissions": "arw",
     })
-    reply = client.put('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+    reply = client.put('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 404
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "test_token",
         "permissions": "r",
     })
-    reply = client.put('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+    reply = client.put('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 201
 
     headers = {
         "X-auth-token": ADMIN_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "test_token",
         "permissions": "r",
     })
-    reply = client.put('/api/v1/token', content_type="application/json",
+    reply = client.put('/api/v1/token',
                        headers=headers, data=data)
     assert reply.status_code == 409
 
@@ -110,17 +111,16 @@ def test_token_put(client):
 def test_token_delete(client):
     headers = {
         "X-auth-token": ADMIN_TOKEN,
+        "Content-Type": "application/json",
     }
     data = json.dumps({
         "name": "test_token",
         "permissions": "r",
     })
-    reply = client.put('/api/v1/token', content_type="application/json",
-                       headers=headers, data=data)
+    reply = client.put('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 201
 
-    reply = client.delete('/api/v1/token', content_type="application/json",
-                          headers=headers, data=data)
+    reply = client.delete('/api/v1/token', headers=headers, data=data)
     assert reply.status_code == 202
 
     headers = {
@@ -139,6 +139,7 @@ def test_deploy_local_config(client, app):
 
     headers = {
         "X-auth-token": WRITER_TOKEN,
+        "Content-Type": "application/json",
         "X-chip-id": "0x00000001",
     }
     data = json.dumps({
@@ -146,13 +147,11 @@ def test_deploy_local_config(client, app):
         "name": "test sensor"
     })
     reply = client.put('/api/v1/deploy/local_config',
-                       content_type="application/json",
                        headers=headers, data=data)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
     reply = client.put('/api/v1/deploy/local_config',
-                       content_type="application/json",
                        headers=headers, data=data)
     assert reply.status_code == 304
     os.unlink(local_config_file)
