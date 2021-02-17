@@ -141,7 +141,6 @@ def update_token(token_name, token_perm, token_regen):
     else:
         return {}, status.HTTP_400_BAD_REQUEST
 
-
     return {"name": token_name,
             "token": token if token_regen else "***",
             "permissions": token_perm if token_perm else "***"},\
