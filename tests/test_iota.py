@@ -15,6 +15,8 @@ D9cbXgTT3Q2w=="
 TEST_WRITER_TOKEN = \
     "YOEN2RhX5kyMx+f/v1Jpg5B4p+R9u+XAvy9zP2x6yB7NkdutedlI++QMJpQ6qDOoyUW/PkpvY7\
 lhLpe8yA1nRQ=="
+TEST_GLOBAL_CONFIG_KEY = \
+    "CdBVIMvt5R5sX0lPY2pkVUvVyVAEPoHV4SjqI4qmDss="
 
 
 def test_token_get(client):
@@ -158,7 +160,25 @@ def test_deploy_local_config(client, app):
 
 
 def test_deploy_global_config(client):
-    pass
+    global_config_file = os.path.join(os.path.dirname(__file__), "..",
+                                      "instance", "global_config.enc")
+    if os.path.exists(global_config_file):
+        os.unlink(global_config_file)
+
+    headers = {
+        "X-auth-token": TEST_WRITER_TOKEN,
+        "X-global-config-key": TEST_GLOBAL_CONFIG_KEY,
+        "Content-Type": "application/json",
+    }
+    data = json.dumps({
+        "global_config_version": 1,
+    })
+    reply = client.put('/api/v1/deploy/global_config',
+                       headers=headers, data=data)
+    assert reply.status_code == 201
+    assert b"successfully" in reply.data
+
+    os.unlink(global_config_file)
 
 
 def test_deploy_firmware(client):
