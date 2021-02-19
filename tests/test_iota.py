@@ -205,7 +205,7 @@ def test_deploy_global_config(client):
 
 def test_deploy_firmware(client):
     firmware_sig_file = os.path.join(os.path.dirname(__file__), "..",
-                                      "instance", "firmware.sig")
+                                     "instance", "firmware.sig")
     firmware_json_file = os.path.join(os.path.dirname(__file__), "..",
                                       "instance", "firmware.json")
     if os.path.exists(firmware_sig_file):
