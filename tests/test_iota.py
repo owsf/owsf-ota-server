@@ -215,7 +215,24 @@ def test_deploy_firmware(client):
 
 
 def test_get_local_config(client):
-    pass
+    local_config_file = os.path.join(os.path.dirname(__file__), "..",
+                                     "instance", "config.json.0x00000001")
+
+    upload_local_config(client, version=1, chip_id="0x00000001")
+
+    hdrs = {
+        "X-chip-id": "0x00000001",
+        "X-config-version": 0,
+    }
+    reply = client.get('/api/v1/local_config', headers=hdrs)
+    assert reply.status_code == 200
+    resp = json.loads(reply.data.decode('utf8'))
+    assert resp["config_version"] == 1
+
+    try:
+        os.unlink(local_config_file)
+    except OSError:
+        pass
 
 
 def test_get_global_config(client):
