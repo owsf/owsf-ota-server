@@ -24,6 +24,18 @@ Siq/rhtCfJE0douZiUKtwTfSaIGFpCPEJpYXdkZ1mX0TuTA9Qkb/e8reBKfDE5WN
 0N8Zxk5gZvwXdFKc1+jjGM3mc+RMPFXDJDKwYoFxQKA="""
 
 
+def upload_global_config(client, version=1):
+    hdrs = {
+        "X-auth-token": TEST_WRITER_TOKEN,
+        "X-global-config-key": TEST_GLOBAL_CONFIG_KEY,
+        "Content-Type": "application/json",
+    }
+    data = json.dumps({
+        "global_config_version": version,
+    })
+    return client.put('/api/v1/deploy/global_config', headers=hdrs, data=data)
+
+
 def upload_local_config(client, version=1, chip_id="0x00000001"):
     hdrs = {
         "X-auth-token": TEST_WRITER_TOKEN,
@@ -174,16 +186,7 @@ def test_deploy_global_config(client):
     if os.path.exists(global_config_file):
         os.unlink(global_config_file)
 
-    headers = {
-        "X-auth-token": TEST_WRITER_TOKEN,
-        "X-global-config-key": TEST_GLOBAL_CONFIG_KEY,
-        "Content-Type": "application/json",
-    }
-    data = json.dumps({
-        "global_config_version": 1,
-    })
-    reply = client.put('/api/v1/deploy/global_config',
-                       headers=headers, data=data)
+    reply = upload_global_config(client)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
