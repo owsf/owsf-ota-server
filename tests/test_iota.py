@@ -5,6 +5,7 @@
 #
 import base64
 import json
+import nacl.utils
 import os
 
 TEST_ADMIN_TOKEN = \
@@ -18,10 +19,8 @@ TEST_WRITER_TOKEN = \
 lhLpe8yA1nRQ=="
 TEST_GLOBAL_CONFIG_KEY = \
     "CdBVIMvt5R5sX0lPY2pkVUvVyVAEPoHV4SjqI4qmDss="
-TEST_FIRMWARE_DATA = \
-    b"""JhGjiHouYphhw/m81cLCDl/dF4HdDm2A72iUIOR1lZqUwIVUhun5hlXZJhhMtC5g
-Siq/rhtCfJE0douZiUKtwTfSaIGFpCPEJpYXdkZ1mX0TuTA9Qkb/e8reBKfDE5WN
-0N8Zxk5gZvwXdFKc1+jjGM3mc+RMPFXDJDKwYoFxQKA="""
+TEST_FIRMWARE_LENGTH = 512
+TEST_FIRMWARE_DATA = base64.b64encode(nacl.utils.random(TEST_FIRMWARE_LENGTH))
 
 
 def upload_firmware(client, version="v1.0", data=TEST_FIRMWARE_DATA):
@@ -30,7 +29,6 @@ def upload_firmware(client, version="v1.0", data=TEST_FIRMWARE_DATA):
         "X-firmware-version": version,
         "Content-Type": "text/plain",
     }
-    data = base64.b64encode(data)
     return client.put('/api/v1/deploy/firmware', headers=headers, data=data)
 
 
@@ -216,6 +214,12 @@ def test_deploy_firmware(client):
     reply = upload_firmware(client)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
+
+    with open(firmware_sig_file, "rb") as f:
+        firmware = f.read()
+
+    assert len(firmware) == TEST_FIRMWARE_LENGTH
+    assert base64.b64encode(firmware) == TEST_FIRMWARE_DATA
 
     os.unlink(firmware_sig_file)
     os.unlink(firmware_json_file)
