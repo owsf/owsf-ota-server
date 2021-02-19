@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: MIT
 #
+import base64
 import json
 import os
 
@@ -17,6 +18,10 @@ TEST_WRITER_TOKEN = \
 lhLpe8yA1nRQ=="
 TEST_GLOBAL_CONFIG_KEY = \
     "CdBVIMvt5R5sX0lPY2pkVUvVyVAEPoHV4SjqI4qmDss="
+TEST_FIRMWARE_DATA = \
+b"""JhGjiHouYphhw/m81cLCDl/dF4HdDm2A72iUIOR1lZqUwIVUhun5hlXZJhhMtC5g
+Siq/rhtCfJE0douZiUKtwTfSaIGFpCPEJpYXdkZ1mX0TuTA9Qkb/e8reBKfDE5WN
+0N8Zxk5gZvwXdFKc1+jjGM3mc+RMPFXDJDKwYoFxQKA="""
 
 
 def test_token_get(client):
@@ -182,7 +187,27 @@ def test_deploy_global_config(client):
 
 
 def test_deploy_firmware(client):
-    pass
+    firmware_sig_file = os.path.join(os.path.dirname(__file__), "..",
+                                      "instance", "firmware.sig")
+    firmware_json_file = os.path.join(os.path.dirname(__file__), "..",
+                                      "instance", "firmware.json")
+    if os.path.exists(firmware_sig_file):
+        os.unlink(firmware_sig_file)
+    if os.path.exists(firmware_json_file):
+        os.unlink(firmware_json_file)
+
+    headers = {
+        "X-auth-token": TEST_WRITER_TOKEN,
+        "X-firmware-version": "v3.0.1",
+        "Content-Type": "text/plain",
+    }
+    data = base64.b64encode(TEST_FIRMWARE_DATA)
+    reply = client.put('/api/v1/deploy/firmware', headers=headers, data=data)
+    assert reply.status_code == 201
+    assert b"successfully" in reply.data
+
+    os.unlink(firmware_sig_file)
+    os.unlink(firmware_json_file)
 
 
 def test_get_local_config(client):
