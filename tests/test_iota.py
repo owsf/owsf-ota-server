@@ -268,4 +268,20 @@ def test_get_global_config(client):
 
 
 def test_get_firmware(client):
-    pass
+    firmware_sig_file = os.path.join(os.path.dirname(__file__), "..",
+                                     "instance", "firmware.sig")
+    firmware_json_file = os.path.join(os.path.dirname(__file__), "..",
+                                      "instance", "firmware.json")
+    upload_firmware(client, data=TEST_FIRMWARE_DATA)
+    hdrs = {
+        'X-ESP8266-version': 'v0.1',
+    }
+    reply = client.get('/api/v1/firmware', headers=hdrs)
+    assert reply.status_code == 200
+    assert len(reply.data) == TEST_FIRMWARE_LENGTH
+    assert base64.b64encode(reply.data) == TEST_FIRMWARE_DATA
+    try:
+        os.unlink(firmware_sig_file)
+        os.unlink(firmware_json_file)
+    except OSError:
+        pass
