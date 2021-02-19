@@ -239,7 +239,24 @@ def test_get_local_config(client):
 
 
 def test_get_global_config(client):
-    pass
+    global_config_file = os.path.join(os.path.dirname(__file__), "..",
+                                      "instance", "global_config.enc")
+
+    upload_global_config(client)
+
+    hdrs = {
+        "X-global-config-version": 0,
+        "X-global-config-key": TEST_GLOBAL_CONFIG_KEY,
+    }
+    reply = client.get('/api/v1/global_config', headers=hdrs)
+    assert reply.status_code == 200
+    resp = json.loads(reply.data.decode('utf-8'))
+    assert resp["global_config_version"] == 1
+
+    try:
+        os.unlink(global_config_file)
+    except OSError:
+        pass
 
 
 def test_get_firmware(client):
