@@ -24,6 +24,16 @@ Siq/rhtCfJE0douZiUKtwTfSaIGFpCPEJpYXdkZ1mX0TuTA9Qkb/e8reBKfDE5WN
 0N8Zxk5gZvwXdFKc1+jjGM3mc+RMPFXDJDKwYoFxQKA="""
 
 
+def upload_firmware(client, version="v1.0", data=TEST_FIRMWARE_DATA):
+    headers = {
+        "X-auth-token": TEST_WRITER_TOKEN,
+        "X-firmware-version": version,
+        "Content-Type": "text/plain",
+    }
+    data = base64.b64encode(data)
+    return client.put('/api/v1/deploy/firmware', headers=headers, data=data)
+
+
 def upload_global_config(client, version=1):
     hdrs = {
         "X-auth-token": TEST_WRITER_TOKEN,
@@ -203,13 +213,7 @@ def test_deploy_firmware(client):
     if os.path.exists(firmware_json_file):
         os.unlink(firmware_json_file)
 
-    headers = {
-        "X-auth-token": TEST_WRITER_TOKEN,
-        "X-firmware-version": "v3.0.1",
-        "Content-Type": "text/plain",
-    }
-    data = base64.b64encode(TEST_FIRMWARE_DATA)
-    reply = client.put('/api/v1/deploy/firmware', headers=headers, data=data)
+    reply = upload_firmware(client)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
