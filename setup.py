@@ -9,7 +9,8 @@ from setuptools import setup
 
 setup(
     name="iota",
-    version="1.0.0",
+    setup_requires=['setuptools-git-versioning'],
+    version_config=True,
     url="https://github.com/junkdna/esp8266-control-server",
     license="BSD",
     maintainer="Tillmann Heidsieck",
