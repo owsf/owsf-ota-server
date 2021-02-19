@@ -1,5 +1,11 @@
+#
+# (C) Copyright 2021 Tillmann Heidsieck
+#
+# SPDX-License-Identifier: MIT
+#
 from setuptools import find_packages
 from setuptools import setup
+
 
 setup(
     name="iota",
