@@ -24,6 +24,20 @@ Siq/rhtCfJE0douZiUKtwTfSaIGFpCPEJpYXdkZ1mX0TuTA9Qkb/e8reBKfDE5WN
 0N8Zxk5gZvwXdFKc1+jjGM3mc+RMPFXDJDKwYoFxQKA="""
 
 
+def upload_local_config(client, version=1, chip_id="0x00000001"):
+    hdrs = {
+        "X-auth-token": TEST_WRITER_TOKEN,
+        "Content-Type": "application/json",
+        "X-chip-id": chip_id,
+    }
+    dat = json.dumps({
+        "config_version": version,
+        "name": "test sensor"
+    })
+
+    return client.put('/api/v1/deploy/local_config', headers=hdrs, data=dat)
+
+
 def test_token_get(client):
     headers = {
         "X-auth-token": "INVALID BUT REALY LONG TOKEN FOR TESTING",
@@ -144,23 +158,13 @@ def test_deploy_local_config(client, app):
     if os.path.exists(local_config_file):
         os.unlink(local_config_file)
 
-    headers = {
-        "X-auth-token": TEST_WRITER_TOKEN,
-        "Content-Type": "application/json",
-        "X-chip-id": "0x00000001",
-    }
-    data = json.dumps({
-        "config_version": 1,
-        "name": "test sensor"
-    })
-    reply = client.put('/api/v1/deploy/local_config',
-                       headers=headers, data=data)
+    reply = upload_local_config(client)
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
-    reply = client.put('/api/v1/deploy/local_config',
-                       headers=headers, data=data)
+    reply = upload_local_config(client)
     assert reply.status_code == 304
+
     os.unlink(local_config_file)
 
 
