@@ -102,7 +102,8 @@ def new_token(token_name, token_perm):
         db.commit()
     except sqlite3.Error as e:
         print(e)
-        return {}, status.HTTP_409_CONFLICT
+        return {"new_token": "token name already exists"},\
+            status.HTTP_409_CONFLICT
 
     return {"name": token_name,
             "token": token.decode(),
