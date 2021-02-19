@@ -190,7 +190,7 @@ def deploy_global_config():
     try:
         j = json.loads(global_conf.decode("utf-8"))
     except json.JSONDecodeError:
-        j = {'config_version': 0}
+        j = {'global_config_version': 0}
 
     new_config = request.get_json()
     if "global_config_version" not in new_config.keys():
