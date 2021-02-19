@@ -22,4 +22,7 @@ setup(
     zip_safe=False,
     install_requires=["flask", "flask_api", "PyNaCl"],
     extras_require={"test": ["pytest", "coverage"]},
+    package_data={
+        "iota" : ["schema.sql"],
+    },
 )
