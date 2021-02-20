@@ -129,7 +129,6 @@ def deploy_local_config():
     except OSError:
         local_conf = b"{'config_version': 0}"
 
-    j = None
     try:
         j = json.loads(local_conf)
     except json.JSONDecodeError:
@@ -139,13 +138,9 @@ def deploy_local_config():
         j = {'config_version': 0}
 
     new_config = request.get_json()
-    if "config_version" not in new_config.keys():
-        return {'local_config': 'no version given'},\
-            status.HTTP_400_BAD_REQUEST
-
-    if int(new_config['config_version']) <= int(j["config_version"]):
-        return {'local_config': 'new version <= current version'}, \
-            status.HTTP_304_NOT_MODIFIED
+    if not isinstance(new_config, dict):
+        return {'local_config': 'invalid config'}, status.HTTP_400_BAD_REQUEST
+    new_config["config_version"] = int(j["config_version"]) + 1
 
     try:
         with open(config_file, "w") as f:
@@ -184,7 +179,7 @@ def deploy_global_config():
     if global_conf:
         global_conf = box.decrypt(global_conf)
     else:
-        global_conf = b"{}"
+        global_conf = b"{'global_config_version': 0}"
 
     j = None
     try:
@@ -193,19 +188,9 @@ def deploy_global_config():
         j = {'global_config_version': 0}
 
     new_config = request.get_json()
-    if "global_config_version" not in new_config.keys():
-        return {"global_config": "no version in new file"},\
-            status.HTTP_400_BAD_REQUEST
-
-    new_version = int(new_config['global_config_version'])
-    if "global_config_version" in j.keys():
-        current_version = int(j["global_config_version"])
-    else:
-        current_version = 0
-
-    if new_version <= current_version:
-        return {'global_config': 'new version <= current version'}, \
-            status.HTTP_304_NOT_MODIFIED
+    if not isinstance(new_config, dict):
+        return {'global_config': 'invalid config'}, status.HTTP_400_BAD_REQUEST
+    new_config["global_config_version"] = int(j["global_config_version"]) + 1
 
     try:
         with open(config_file, "wb") as f:
