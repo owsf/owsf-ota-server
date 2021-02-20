@@ -13,8 +13,12 @@ import os
 
 
 def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    try:
+        instance_path = os.environ["IOTA_INSTANCE_PATH"]
+    except :
+        instance_path = os.path.join(os.environ["PWD"], "instance")
+
+    app = Flask(__name__, instance_path=instance_path)
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'iota.sqlite'),
