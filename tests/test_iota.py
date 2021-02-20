@@ -51,7 +51,6 @@ def upload_local_config(client, version=1, chip_id="0x00000001"):
         "X-chip-id": chip_id,
     }
     dat = json.dumps({
-        "config_version": version,
         "name": "test sensor"
     })
 
@@ -182,9 +181,6 @@ def test_deploy_local_config(client, app):
     assert reply.status_code == 201
     assert b"successfully" in reply.data
 
-    reply = upload_local_config(client)
-    assert reply.status_code == 304
-
     os.unlink(local_config_file)
 
 
@@ -228,6 +224,11 @@ def test_deploy_firmware(client):
 def test_get_local_config(client):
     local_config_file = os.path.join(os.path.dirname(__file__), "..",
                                      "instance", "config.json.0x00000001")
+
+    try:
+        os.unlink(local_config_file)
+    except OSError:
+        pass
 
     upload_local_config(client, version=1, chip_id="0x00000001")
 
