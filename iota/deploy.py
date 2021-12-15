@@ -32,6 +32,11 @@ def v2l(v):
         as_list[i] = re.sub(r"[_+-]+?", ".", as_list[i])
         as_list[i] = as_list[i].split(".")
 
+    for i in range(0, len(as_list)):
+        for j in range(0, len(as_list[i])):
+            if re.match(r"[0-9]+", as_list[i][j]):
+                as_list[i][j] = int(as_list[i][j])
+
     return as_list
 
 
