@@ -121,9 +121,6 @@ def firmware():
     else:
         server_version = "0.0"
 
-    if vercmp(version, server_version) <= 0:
-        return {}, status.HTTP_304_NOT_MODIFIED
-
     try:
         ffile = j["file"]
     except ValueError:
